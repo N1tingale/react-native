@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Toast from "react-native-toast-message";
+import { Keyboard } from "react-native";
 import {
   StyleSheet,
   Text,
@@ -7,6 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
+  TouchableWithoutFeedback
 } from "react-native";
 
 export default function App() {
@@ -23,6 +25,12 @@ export default function App() {
       type: "success",
       text1: "✅ Success!",
       text2: "Todo created.",
+    });
+  };
+
+  const pressHandler = (key) => {
+    setTodos((prevTodos) => {
+      return prevTodos.filter((todo) => todo.key != key);
     });
   };
 
@@ -44,30 +52,34 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Add a todo!</Text>
-      <TextInput
-        maxLength={100}
-        style={styles.input}
-        placeholder={"Type in something..."}
-        value={text}
-        onChangeText={(val) => setText(val)}
-        onSubmitEditing={(value) => submitHandler(value.nativeEvent.text)}
-      />
-      <View style={styles.todoList}>
+    <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+      <View style={styles.container}>
+        <Text style={styles.text}>Add a todo!</Text>
+        <TextInput
+          maxLength={100}
+          style={styles.input}
+          placeholder={"Type in something..."}
+          value={text}
+          onChangeText={(val) => setText(val)}
+          onSubmitEditing={(value) => submitHandler(value.nativeEvent.text)}
+        />
         {todos.length > 0 ? (
-          <FlatList 
-            data={todos}
-            renderItem={({ item }) => (
-              <Text style={styles.todo}>· {item.text}</Text>
-            )}
-          />
+          <View style={styles.todoList}>
+            <FlatList
+              data={todos}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => pressHandler(item.key)}>
+                  <Text style={styles.todo}>· {item.text}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
         ) : (
           <Text style={styles.noTodos}>No todos yet!</Text>
         )}
+        <Toast />
       </View>
-      <Toast />
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -96,21 +108,21 @@ const styles = StyleSheet.create({
     marginTop: 15,
     fontSize: 20,
   },
-  todoList:{
-    width:"80%"
+  todoList: {
+    width: "80%",
   },
   todo: {
-    borderWidth:1,
-    borderColor:"#92a8d1",
+    borderWidth: 1,
+    borderColor: "#92a8d1",
     backgroundColor: "#f5f5f5",
     color: "white",
     borderRadius: 5,
     fontSize: 22,
     padding: 10,
     marginHorizontal: 10,
-    marginTop: 15
+    marginTop: 15,
   },
-  icon:{
-    color:"#a9a9a9"
-  }
+  icon: {
+    color: "#a9a9a9",
+  },
 });
