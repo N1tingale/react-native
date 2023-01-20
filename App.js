@@ -1,37 +1,59 @@
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 
 export default function App() {
-  const [people, setPeople] = useState([
-    { name: "Тарас Шевченко", id: 1 },
-    { name: "Лариса Косач", id: 2 },
-    { name: "Іван Франко", id: 3 },
-    { name: "Володимир Тютюнник", id: 4 },
-    { name: "Павло Тичина", id: 5 }
-  ]);
+
+  const[todos, setTodos] = useState([]);
+
+  const[text, setText] = useState("")
+
+  const handleSubmit = (value) => {
+    if (value.length < 5){
+      
+    }
+    setTodos([...todos, value])
+    console.log(todos)
+    setText("")
+  }
+
+
+
   return (
     <View style={styles.container}>
-      <FlatList
-      keyExtractor={(item) => item.id}
-      data={people}
-      renderItem={({item}) => (
-        <Text style={styles.item}>Name: {item.name}, id: {item.id}</Text>
-      )}
-      
-      />
+      <Text style={styles.text}>Add a todo!</Text>
+      <TextInput maxLength={100} style={styles.input} placeholder={"Type in something..."} value={text} onChangeText={(val) => setText(val)} onSubmitEditing={(value) => handleSubmit(value.nativeEvent.text)}/>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  item: {
-    fontWeight: "600",
-    fontStyle: "italic",
-    backgroundColor: "yellow",
-    padding: 4
+  container: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
   },
-  container:{
-    marginTop: 150
+  text:{
+    color: "white",
+    fontSize: 25
+  },
+  input:{
+    borderColor: "#57595D",
+    borderWidth: 1,
+    margin: 10,
+    width: "75%",
+    height: 40,
+    borderRadius: 5,
+    paddingLeft: 10
   }
+
 });
